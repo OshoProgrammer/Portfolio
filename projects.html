@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects — Osho Sharma</title>
+    <meta name="description" content="Selected projects by Osho Sharma: a Rust CLI file organizer, an AES-256-GCM encryption tool, and a C++ log analyzer.">
+
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --soft: #111111;
+            --panel: #151515;
+            --white: #f2efe8;
+            --dim: rgba(242, 239, 232, 0.58);
+            --line: rgba(242, 239, 232, 0.16);
+            --orange: #ff5a1f;
+            --purple: #7c3aed;
+            --purple-soft: #a78bfa;
+            --sans: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --mono: "SFMono-Regular", ui-monospace, Consolas, "Liberation Mono", Menlo, monospace;
+            --gutter: clamp(1.1rem, 4vw, 3rem);
+            --max: 1280px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--sans);
+            font-size: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            background-image:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px);
+            background-size: 64px 64px;
+            background-position: -1px -1px;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(10,10,10,0.35), var(--black) 85%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body > * { position: relative; z-index: 1; }
+
+        ::selection { background: var(--orange); color: var(--black); }
+        a { color: inherit; }
+        a:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding-left: var(--gutter);
+            padding-right: var(--gutter);
+        }
+
+        .mono {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        /* ---------- Top bar ---------- */
+        .topbar { border-bottom: 1px solid var(--line); background: rgba(10,10,10,0.85); }
+
+        .topbar .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .brand {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.22em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .brand i {
+            width: 0.6rem;
+            height: 0.6rem;
+            background: var(--orange);
+            display: inline-block;
+            box-shadow: 0.35rem 0.35rem 0 -0.05rem var(--purple);
+            margin-right: 0.35rem;
+        }
+
+        .nav ul { display: flex; gap: clamp(1rem, 3vw, 2.2rem); margin: 0; padding: 0; list-style: none; }
+
+        .nav a {
+            font-family: var(--mono);
+            font-size: 0.74rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--dim);
+            padding: 0.3rem 0.1rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .nav a::before { content: "/ "; color: var(--purple-soft); }
+        .nav a:hover, .nav a:focus-visible { color: var(--white); border-bottom-color: var(--purple); }
+        .nav a[aria-current="page"] { color: var(--orange); border-bottom-color: var(--orange); }
+
+        /* ---------- Strip ---------- */
+        .strip { border-bottom: 1px solid var(--line); color: var(--dim); }
+        .strip .wrap {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 0.55rem;
+            padding-bottom: 0.55rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .strip b { color: var(--orange); font-weight: 400; }
+
+        /* ---------- Page header ---------- */
+        .page-head .wrap {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            column-gap: 2rem;
+            align-items: end;
+            padding-top: clamp(2.5rem, 6vw, 4.5rem);
+            padding-bottom: clamp(2rem, 4vw, 3rem);
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--purple-soft);
+            margin: 0 0 1.2rem;
+        }
+
+        .kicker::before { content: ""; width: 2.2rem; height: 1px; background: var(--orange); }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: clamp(3.2rem, 12vw, 8.4rem);
+            line-height: 0.86;
+            letter-spacing: -0.055em;
+            text-transform: uppercase;
+        }
+
+        h1 span { color: transparent; -webkit-text-stroke: 1.5px var(--white); transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease; }
+        h1:hover span { color: var(--orange); -webkit-text-stroke-color: var(--orange); }
+
+        .head-meta {
+            text-align: right;
+            color: var(--dim);
+            padding-bottom: 0.6rem;
+            line-height: 2;
+        }
+
+        .head-meta b { color: var(--orange); font-weight: 400; }
+
+        .head-meta .pips { display: flex; justify-content: flex-end; gap: 0.35rem; margin-bottom: 0.6rem; }
+        .head-meta .pips i { width: 1.4rem; height: 0.4rem; background: var(--line); display: block; }
+        .head-meta .pips i:nth-child(1) { background: var(--orange); }
+        .head-meta .pips i:nth-child(2) { background: var(--purple); }
+
+        /* ---------- Project common ---------- */
+        /* Each project defines its own accent once. Anything that needs
+           "the project colour" reads these three variables. */
+        .project {
+            --acc: var(--orange);        /* fills and borders */
+            --acc-text: var(--orange);   /* accent text on black */
+            --acc-ink: var(--black);     /* text that sits ON the accent fill */
+            position: relative;
+            border-top: 1px solid var(--line);
+        }
+
+        .p2 {
+            --acc: var(--purple);
+            --acc-text: var(--purple-soft);
+            --acc-ink: var(--white);
+        }
+
+        /* Ruler ticks hanging from each top rule, tying the three sections together */
+        .project::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 16px);
+            pointer-events: none;
+        }
+
+        /* A small node sitting on the rule, like a junction on a bus line */
+        .project::after {
+            content: "";
+            position: absolute;
+            top: -4px;
+            left: max(var(--gutter), calc(50% - var(--max) / 2 + var(--gutter)));
+            width: 7px;
+            height: 7px;
+            background: var(--acc);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        .project:hover::after { transform: scale(1.7); }
+
+        .project .wrap {
+            padding-top: clamp(2.2rem, 4.5vw, 3.8rem);
+            padding-bottom: clamp(2.4rem, 5vw, 4.2rem);
+        }
+
+        .pnum {
+            font-weight: 800;
+            font-size: clamp(3.4rem, 9vw, 7rem);
+            line-height: 0.8;
+            letter-spacing: -0.06em;
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--dim);
+            transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease;
+            margin: 0;
+        }
+
+        .project:hover .pnum { -webkit-text-stroke-color: var(--orange); color: rgba(255, 90, 31, 0.12); }
+        .p2:hover .pnum { -webkit-text-stroke-color: var(--purple-soft); color: rgba(124, 58, 237, 0.16); }
+
+        .pid { color: var(--orange); margin: 0 0 0.8rem; display: block; }
+        .p2 .pid { color: var(--purple-soft); }
+
+        h2.ptitle { margin: 0 0 1.4rem; font-weight: 400; }
+
+        .pname {
+            display: block;
+            font-weight: 800;
+            font-size: clamp(2rem, 1.2rem + 3.2vw, 3.8rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+
+        .pcat {
+            display: block;
+            margin-top: 0.7rem;
+            font-family: var(--mono);
+            font-size: clamp(0.78rem, 0.72rem + 0.25vw, 0.9rem);
+            letter-spacing: 0.1em;
+            color: var(--dim);
+        }
+
+        /* A thin rule separates the title block from the description */
+        .pbody { padding-top: 1.2rem; border-top: 1px solid var(--line); }
+        .pbody p { margin: 0 0 1rem; color: rgba(242,239,232,0.84); }
+        .pbody p:first-of-type { color: var(--white); font-size: 1.08em; }
+        .pbody p:last-of-type { margin-bottom: 0; }
+
+        .stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            list-style: none;
+            margin: 1.4rem 0 0;
+            padding: 0;
+        }
+
+        .stack li {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 0.35rem 0.7rem;
+            border: 1px solid var(--line);
+            color: var(--dim);
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .project:hover .stack li { border-color: var(--orange); color: var(--white); }
+        .p2:hover .stack li { border-color: var(--purple); }
+
+        /* ---------- GitHub repository link ----------
+           One bordered "terminal row" with three cells: label | path | arrow */
+        .src {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: stretch;
+            margin-top: 1.4rem;
+            border: 1px solid var(--line);
+            font-family: var(--mono);
+            font-size: 0.74rem;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            color: var(--white);
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .src > span { padding: 0.75rem 0.9rem; }
+
+        .src-label {
+            color: var(--acc-text);
+            border-right: 1px solid var(--line);
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .src-path { letter-spacing: 0.04em; overflow-wrap: anywhere; }
+
+        .src-arrow { color: var(--acc-text); transition: transform 0.25s ease; }
+
+        .src:hover, .src:focus-visible {
+            border-color: var(--acc);
+            background: rgba(242, 239, 232, 0.04);
+        }
+
+        .src:hover .src-label, .src:focus-visible .src-label {
+            background: var(--acc);
+            border-right-color: var(--acc);
+            color: var(--acc-ink);
+        }
+
+        .src:hover .src-arrow, .src:focus-visible .src-arrow { transform: translateX(4px); }
+
+        /* Visual frames */
+        .vis {
+            position: relative;
+            border: 1px solid var(--line);
+            background: linear-gradient(160deg, var(--panel), var(--black));
+            padding: 0.8rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .vis svg { display: block; width: 100%; height: auto; }
+        .project:hover .vis { border-color: rgba(255, 90, 31, 0.55); }
+        .p2:hover .vis { border-color: rgba(124, 58, 237, 0.7); }
+
+        .vis-cap { display: flex; justify-content: space-between; gap: 1rem; padding-top: 0.7rem; color: var(--dim); }
+        .vis-cap b { color: var(--orange); font-weight: 400; }
+        .p2 .vis-cap b { color: var(--purple-soft); }
+
+        /* Slightly larger SVG labels so they stay legible when the art scales down */
+        .svg-t { font-family: var(--mono); font-size: 13px; letter-spacing: 1px; fill: rgba(242,239,232,0.6); }
+        .svg-t.o { fill: var(--orange); }
+        .svg-t.p { fill: var(--purple-soft); }
+        .svg-t.w { fill: var(--white); }
+
+        .ln { fill: none; stroke-width: 1.5; stroke-linecap: square; stroke-opacity: 0.45; transition: stroke-opacity 0.3s ease; }
+        .ln.o { stroke: var(--orange); }
+        .ln.p { stroke: var(--purple); }
+        .ln.w { stroke: var(--white); stroke-opacity: 0.3; }
+        .project:hover .ln { stroke-opacity: 1; }
+        .project:hover .ln.w { stroke-opacity: 0.6; }
+
+        .dash { stroke-dasharray: 5 8; }
+        .project:hover .dash { animation: flow 5s linear infinite; }
+        @keyframes flow { to { stroke-dashoffset: -130; } }
+
+        .nd { transform-box: fill-box; transform-origin: center; transition: transform 0.4s ease; }
+        .project:hover .nd.a { transform: translate(6px, -4px); }
+        .project:hover .nd.b { transform: translate(-6px, 4px); }
+        .project:hover .nd.c { transform: translate(5px, 5px); }
+
+        .fold { fill: rgba(255, 90, 31, 0.12); stroke: var(--orange); stroke-width: 1.5; transition: fill 0.3s ease; }
+        .fold.p { fill: rgba(124, 58, 237, 0.18); stroke: var(--purple); }
+        .project:hover .fold { fill: rgba(255, 90, 31, 0.3); }
+        .project:hover .fold.p { fill: rgba(124, 58, 237, 0.4); }
+
+        /* ---------- 01 : visual left, text right ---------- */
+        .p1 .wrap {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            column-gap: clamp(1rem, 2.5vw, 2rem);
+            align-items: start;
+        }
+
+        .p1 .vis-col { grid-column: 1 / span 7; }
+        .p1 .txt-col { grid-column: 8 / span 5; padding-top: 0.5rem; }
+        .p1 .pnum { margin-bottom: 1.2rem; }
+
+        /* ---------- 02 : text left, visual right ---------- */
+        .p2 { background: rgba(17,17,17,0.6); }
+
+        .p2 .wrap {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            column-gap: clamp(1rem, 2.5vw, 2rem);
+            align-items: start;
+        }
+
+        .p2 .txt-col { grid-column: 1 / span 5; }
+        .p2 .vis-col { grid-column: 6 / span 7; }
+        .p2 .pnum { margin-bottom: 1.2rem; }
+
+        /* Hex rows use their own class (.hx) so they don't resize the small labels */
+        .hexgrid .hx {
+            font-family: var(--mono);
+            font-size: 19px;
+            letter-spacing: 2px;
+            white-space: pre;           /* keeps the double spaces between bytes */
+            fill: rgba(242,239,232,0.5);
+            transition: fill 0.3s ease;
+        }
+        .hexgrid .hot { fill: var(--orange); }
+        .hexgrid .hotp { fill: var(--purple-soft); }
+        .p2:hover .hexgrid .hx { fill: rgba(242,239,232,0.85); }
+        .p2:hover .hexgrid .hot { fill: var(--orange); }
+        .p2:hover .hexgrid .hotp { fill: var(--purple-soft); }
+        .hexgrid .row-box { fill: none; stroke-width: 1; stroke-opacity: 0.6; transition: stroke-opacity 0.3s ease; }
+        .p2:hover .hexgrid .row-box { stroke-opacity: 1; }
+        .hexgrid .slide { transition: transform 0.4s ease; }
+        .p2:hover .hexgrid .slide { transform: translateX(8px); }
+
+        /* ---------- 03 : stacked, header row, visuals, three columns ---------- */
+        .p3 .top {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            column-gap: clamp(1.2rem, 3vw, 2.5rem);
+            align-items: end;
+            margin-bottom: clamp(1.4rem, 3vw, 2.2rem);
+        }
+
+        .p3 h2.ptitle { margin-bottom: 0; }
+
+        .p3 .vis-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+            gap: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .term {
+            border: 1px solid var(--line);
+            background: var(--soft);
+            font-family: var(--mono);
+            min-width: 0;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .p3:hover .term, .p3:hover .freq { border-color: rgba(255, 90, 31, 0.55); }
+
+        .term-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.55rem 1rem;
+            border-bottom: 1px solid var(--line);
+            background: rgba(242,239,232,0.03);
+            color: var(--dim);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .term-bar b { color: var(--orange); font-weight: 400; }
+
+        .log { list-style: none; margin: 0; padding: 0.6rem 0; }
+
+        .log li {
+            display: grid;
+            grid-template-columns: 6.6rem 5.4rem minmax(0, 1fr);
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.42rem 1rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+            transition: background 0.2s ease;
+        }
+
+        .log li:hover { background: rgba(124, 58, 237, 0.12); }
+        .log time { color: var(--dim); }
+        .log b { font-weight: 400; }
+        .log .info { color: var(--white); }
+        .log .warn { color: var(--purple-soft); }
+        .log .err { color: var(--orange); }
+
+        .log i { display: block; height: 3px; background: var(--line); transition: width 0.4s ease, background 0.3s ease; }
+        .log .err ~ i { background: rgba(255, 90, 31, 0.5); }
+        .log .warn ~ i { background: rgba(124, 58, 237, 0.6); }
+        .p3:hover .log i { filter: brightness(1.5); }
+
+        .freq {
+            border: 1px solid var(--line);
+            background: var(--soft);
+            font-family: var(--mono);
+            padding: 0.55rem 1rem 1rem;
+            min-width: 0;
+            transition: border-color 0.3s ease;
+        }
+
+        .freq-title { display: flex; justify-content: space-between; color: var(--dim); padding: 0.1rem 0 0.8rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+        .freq-title b { color: var(--purple-soft); font-weight: 400; }
+
+        .bar { margin-bottom: 1rem; }
+        .bar:last-child { margin-bottom: 0; }
+        .bar span { display: flex; justify-content: space-between; color: var(--dim); margin-bottom: 0.35rem; }
+        .bar span em { font-style: normal; }
+
+        .bar div { height: 14px; background: rgba(242,239,232,0.06); position: relative; }
+        .bar div::after {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: var(--w);
+            background: var(--white);
+            opacity: 0.55;
+            transition: width 0.5s ease, background 0.3s ease, opacity 0.3s ease;
+        }
+
+        .bar.o div::after { background: var(--orange); opacity: 0.8; }
+        .bar.p div::after { background: var(--purple); opacity: 0.9; }
+        .p3:hover .bar div::after { opacity: 1; }
+        .p3:hover .bar:nth-child(1) div::after { width: calc(var(--w) + 6%); }
+
+        .p3 .cols {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            column-gap: clamp(1rem, 3vw, 2.5rem);
+            margin-top: clamp(1.6rem, 3vw, 2.4rem);
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--line);
+        }
+
+        .p3 .cols p { margin: 0; color: rgba(242,239,232,0.84); }
+        /* The three columns are equals, so none gets the "lead paragraph" size */
+        .p3 .cols p:first-of-type { font-size: 1em; color: rgba(242,239,232,0.84); }
+        .p3 .cols p::before {
+            content: attr(data-n);
+            display: block;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.16em;
+            color: var(--orange);
+            margin-bottom: 0.6rem;
+        }
+        .p3 .cols p:nth-child(2)::before { color: var(--purple-soft); }
+
+        .p3 .foot-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: clamp(1.4rem, 3vw, 2rem);
+        }
+
+        .p3 .foot-row .stack { margin-top: 0; }
+        .p3 .foot-row .src { margin-top: 0; min-width: min(100%, 24rem); }
+
+        /* ---------- Footer ---------- */
+        .foot { border-top: 1px solid var(--line); }
+        .foot .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 1.1rem;
+            padding-bottom: 1.6rem;
+            color: var(--dim);
+        }
+        .foot nav { display: flex; gap: 1.4rem; }
+        .foot a { text-decoration: none; transition: color 0.2s ease; }
+        .foot a:hover { color: var(--orange); }
+        .foot b { color: var(--orange); font-weight: 400; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 980px) {
+            .p1 .wrap, .p2 .wrap { display: block; }
+            .p1 .vis-col, .p2 .vis-col { margin-bottom: 2rem; }
+            .p2 .txt-col { margin-bottom: 2rem; }
+            .p2 .vis-col { margin-bottom: 0; }
+            .p3 .vis-row { grid-template-columns: 1fr; }
+            .p3 .cols { grid-template-columns: 1fr; row-gap: 1.4rem; }
+        }
+
+        @media (max-width: 720px) {
+            .topbar .wrap { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+            .strip span:nth-child(n+3) { display: none; }
+            .page-head .wrap { grid-template-columns: 1fr; row-gap: 1.2rem; }
+            .head-meta { text-align: left; }
+            .head-meta .pips { justify-content: flex-start; }
+            .p3 .top { grid-template-columns: 1fr; row-gap: 0.8rem; }
+            .log li { grid-template-columns: 5.6rem 4.6rem minmax(0, 1fr); gap: 0.5rem; font-size: 0.74rem; padding: 0.4rem 0.7rem; }
+            .src > span { padding: 0.7rem 0.75rem; }
+            .foot .wrap { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .project:hover .dash { animation: none; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><i></i>OSHO SHARMA</a>
+            <nav class="nav" aria-label="Primary">
+                <ul>
+                    <li><a href="index.html">About</a></li>
+                    <li><a href="projects.html" aria-current="page">Projects</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="strip mono" aria-hidden="true">
+        <div class="wrap">
+            <span>SYS_002</span>
+            <span>STATUS / <b>ACTIVE</b></span>
+            <span>WORK / 03</span>
+            <span>BUILD / 2026</span>
+        </div>
+    </div>
+
+    <main>
+
+        <header class="page-head">
+            <div class="wrap">
+                <div>
+                    <p class="kicker mono">/ SELECTED WORK</p>
+                    <h1>Proj<span>ects</span></h1>
+                </div>
+                <div class="head-meta mono" aria-hidden="true">
+                    <div class="pips"><i></i><i></i><i></i></div>
+                    WORK / <b>03</b><br>
+                    NODE_07 / INDEX
+                </div>
+            </div>
+        </header>
+
+        <!-- ================= PROJECT 01 ================= -->
+        <article class="project p1" aria-labelledby="p1-title">
+            <div class="wrap">
+                <div class="vis-col">
+                    <div class="vis" role="img" aria-label="Abstract terminal window showing unsorted files being moved into documents, images, videos and code folders">
+                        <svg viewBox="0 0 560 410" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="0.5" y="0.5" width="559" height="409" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.25"/>
+                            <rect x="0.5" y="0.5" width="559" height="32" fill="#f2efe8" fill-opacity="0.04" stroke="#f2efe8" stroke-opacity="0.25"/>
+                            <rect x="14" y="12" width="9" height="9" fill="#ff5a1f"/>
+                            <rect x="30" y="12" width="9" height="9" fill="#7c3aed"/>
+                            <rect x="46" y="12" width="9" height="9" fill="none" stroke="#f2efe8" stroke-opacity="0.5"/>
+                            <text class="svg-t" x="76" y="22">organize / terminal</text>
+                            <text class="svg-t" x="470" y="22">PID_0x01</text>
+
+                            <text class="svg-t o" x="28" y="64">$ organize .</text>
+                            <text class="svg-t w" x="28" y="104">/</text>
+
+                            <!-- tree spine -->
+                            <path class="ln w" d="M36 112 V342"/>
+                            <path class="ln o" d="M36 150 H78"/>
+                            <path class="ln p" d="M36 214 H78"/>
+                            <path class="ln o" d="M36 278 H78"/>
+                            <path class="ln p" d="M36 342 H78"/>
+
+                            <!-- folders -->
+                            <g>
+                                <path class="fold" d="M84 140 h14 l5 5 h19 v22 h-38 z"/>
+                                <text class="svg-t w" x="136" y="158" style="font-size:17px">documents/</text>
+                                <path class="fold p" d="M84 204 h14 l5 5 h19 v22 h-38 z"/>
+                                <text class="svg-t w" x="136" y="222" style="font-size:17px">images/</text>
+                                <path class="fold" d="M84 268 h14 l5 5 h19 v22 h-38 z"/>
+                                <text class="svg-t w" x="136" y="286" style="font-size:17px">videos/</text>
+                                <path class="fold p" d="M84 332 h14 l5 5 h19 v22 h-38 z"/>
+                                <text class="svg-t w" x="136" y="350" style="font-size:17px">code/</text>
+                            </g>
+
+                            <!-- extension tags -->
+                            <g class="svg-t">
+                                <text x="136" y="178">.pdf  .txt  .docx</text>
+                                <text x="136" y="242">.png  .jpg  .svg</text>
+                                <text x="136" y="306">.mp4  .mkv  .mov</text>
+                                <text x="136" y="370">.rs  .cpp  .sh</text>
+                            </g>
+
+                            <!-- flow from unsorted files into folders -->
+                            <text class="svg-t p" x="440" y="98">UNSORTED</text>
+                            <path class="ln o dash" d="M470 120 C 400 120, 360 150, 300 150"/>
+                            <path class="ln p dash" d="M490 190 C 410 190, 360 214, 300 214"/>
+                            <path class="ln o dash" d="M470 262 C 400 262, 360 278, 300 278"/>
+                            <path class="ln p dash" d="M490 330 C 410 330, 360 342, 300 342"/>
+
+                            <g stroke-width="1.5" fill="#0a0a0a">
+                                <rect class="nd a" x="470" y="112" width="16" height="20" stroke="#ff5a1f"/>
+                                <rect class="nd b" x="490" y="182" width="16" height="20" stroke="#7c3aed"/>
+                                <rect class="nd c" x="470" y="254" width="16" height="20" stroke="#ff5a1f"/>
+                                <rect class="nd a" x="490" y="322" width="16" height="20" stroke="#7c3aed"/>
+                                <rect class="nd b" x="520" y="140" width="12" height="16" stroke="#f2efe8" stroke-opacity="0.5"/>
+                                <rect class="nd c" x="516" y="226" width="12" height="16" stroke="#f2efe8" stroke-opacity="0.5"/>
+                            </g>
+
+                            <text class="svg-t" x="28" y="396">SORTED / BY EXTENSION</text>
+                            <text class="svg-t p" x="440" y="396">DIR / FLOW</text>
+                        </svg>
+                        <div class="vis-cap mono"><span>FIG.03 / <b>FILESYSTEM</b></span><span>DECORATIVE</span></div>
+                    </div>
+                </div>
+
+                <div class="txt-col">
+                    <p class="pnum" aria-hidden="true">01</p>
+                    <span class="pid mono">PRJ_01 / RUST</span>
+                    <h2 class="ptitle" id="p1-title"><span class="pname">Organize</span><span class="pcat">— Rust CLI File Organizer</span></h2>
+                    <div class="pbody">
+                        <p>Organized files into extension-based directories automatically, reducing manual file sorting for large collections of files.</p>
+                        <p>Implemented filesystem traversal, directory creation, and file movement using Rust's standard library.</p>
+                        <p>Supported custom directory paths and current-directory operation across Linux, Windows, and macOS.</p>
+                    </div>
+                    <ul class="stack" aria-label="Technology">
+                        <li>Rust</li>
+                        <li>CLI</li>
+                        <li>Filesystem</li>
+                    </ul>
+                    <a class="src" href="https://github.com/OshoProgrammer/Organize" target="_blank" rel="noopener noreferrer" aria-label="Organize repository on GitHub (opens in a new tab)">
+                        <span class="src-label">GITHUB</span>
+                        <span class="src-path">/OshoProgrammer/Organize</span>
+                        <span class="src-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <!-- ================= PROJECT 02 ================= -->
+        <article class="project p2" aria-labelledby="p2-title">
+            <div class="wrap">
+                <div class="txt-col">
+                    <p class="pnum" aria-hidden="true">02</p>
+                    <span class="pid mono">PRJ_02 / RUST</span>
+                    <h2 class="ptitle" id="p2-title"><span class="pname">Encryptor</span><span class="pcat">— Rust, AES-256-GCM</span></h2>
+                    <div class="pbody">
+                        <p>Encrypted text and transmission data with AES-256-GCM in a single operation, generating a unique nonce per encryption using Rust's cryptography libraries.</p>
+                        <p>Validated encryption and decryption behavior with unit tests covering successful operations and error cases.</p>
+                    </div>
+                    <ul class="stack" aria-label="Technology">
+                        <li>Rust</li>
+                        <li>AES-256-GCM</li>
+                        <li>Cryptography</li>
+                    </ul>
+                    <a class="src" href="https://github.com/OshoProgrammer/Encryptor" target="_blank" rel="noopener noreferrer" aria-label="Encryptor repository on GitHub (opens in a new tab)">
+                        <span class="src-label">GITHUB</span>
+                        <span class="src-path">/OshoProgrammer/Encryptor</span>
+                        <span class="src-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+
+                <div class="vis-col">
+                    <div class="vis" role="img" aria-label="Abstract grid of hexadecimal bytes with a highlighted first row and last row in orange and purple">
+                        <svg class="hexgrid" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="0.5" y="0.5" width="559" height="419" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.2"/>
+
+                            <!-- column headers, one per byte so they line up with the rows -->
+                            <g class="svg-t">
+                                <text x="30" y="32">00</text>
+                                <text x="92" y="32">01</text>
+                                <text x="154" y="32">02</text>
+                                <text x="215" y="32">03</text>
+                                <text x="277" y="32">04</text>
+                                <text x="339" y="32">05</text>
+                            </g>
+                            <text class="svg-t p" x="442" y="32">KEY / 256</text>
+                            <path class="ln w" d="M24 44 H536"/>
+
+                            <!-- row 1 : nonce -->
+                            <rect class="row-box" x="18" y="62" width="400" height="44" stroke="#ff5a1f"/>
+                            <g class="slide">
+                                <text class="hx hot" x="30" y="92" textLength="360" lengthAdjust="spacing">7A  91  03  F4  C2  5B</text>
+                            </g>
+                            <text class="svg-t o" x="442" y="88">NONCE</text>
+
+                            <!-- ciphertext rows -->
+                            <text class="hx" x="30" y="144" textLength="360" lengthAdjust="spacing">A2  0D  88  19  E7  6D</text>
+                            <text class="hx" x="30" y="196" textLength="360" lengthAdjust="spacing">FF  31  C7  04  3A  90</text>
+                            <text class="hx" x="30" y="248" textLength="360" lengthAdjust="spacing">1E  B8  52  DD  0F  A6</text>
+                            <text class="hx" x="30" y="300" textLength="360" lengthAdjust="spacing">64  CB  29  8E  F1  37</text>
+
+                            <!-- bracket grouping the ciphertext rows -->
+                            <path class="ln w" d="M422 126 H432 V306 H422"/>
+                            <text class="svg-t" x="442" y="200">CIPHERTEXT</text>
+
+                            <!-- last row : tag -->
+                            <rect class="row-box" x="18" y="322" width="400" height="44" stroke="#7c3aed"/>
+                            <g class="slide">
+                                <text class="hx hotp" x="30" y="352" textLength="360" lengthAdjust="spacing">D3  4F  A8  0B  96  2C</text>
+                            </g>
+                            <text class="svg-t p" x="442" y="348">TAG</text>
+
+                            <!-- key glyph -->
+                            <g fill="none" stroke-width="1.5">
+                                <circle class="nd a" cx="494" cy="112" r="10" stroke="#ff5a1f"/>
+                                <path class="ln o" d="M504 112 H536 M522 112 V122 M530 112 V118"/>
+                            </g>
+
+                            <path class="ln p dash" d="M18 392 H542"/>
+                            <text class="svg-t" x="24" y="412">01 01 00 10  /  11 00 10 01</text>
+                            <text class="svg-t o" x="430" y="412">AES-256-GCM</text>
+                        </svg>
+                        <div class="vis-cap mono"><span>FIG.04 / <b>DATA BLOCKS</b></span><span>DECORATIVE ONLY</span></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- ================= PROJECT 03 ================= -->
+        <article class="project p3" aria-labelledby="p3-title">
+            <div class="wrap">
+                <div class="top">
+                    <p class="pnum" aria-hidden="true">03</p>
+                    <div>
+                        <span class="pid mono">PRJ_03 / C++</span>
+                        <h2 class="ptitle" id="p3-title"><span class="pname">LogAnalyzer</span><span class="pcat">— C++, STL</span></h2>
+                    </div>
+                </div>
+
+                <div class="vis-row">
+                    <div class="term" role="img" aria-label="Abstract terminal log with timestamps and INFO, WARNING and ERROR severity levels">
+                        <div class="term-bar mono"><span>loganalyzer / stream</span><b>LIVE</b></div>
+                        <ol class="log" aria-hidden="true">
+                            <li><time>[12:41:03]</time><b class="info">INFO</b><i style="width:78%"></i></li>
+                            <li><time>[12:41:07]</time><b class="warn">WARNING</b><i style="width:52%"></i></li>
+                            <li><time>[12:41:09]</time><b class="err">ERROR</b><i style="width:36%"></i></li>
+                            <li><time>[12:41:11]</time><b class="info">INFO</b><i style="width:64%"></i></li>
+                            <li><time>[12:41:14]</time><b class="info">INFO</b><i style="width:44%"></i></li>
+                            <li><time>[12:41:18]</time><b class="err">ERROR</b><i style="width:58%"></i></li>
+                            <li><time>[12:41:22]</time><b class="warn">WARNING</b><i style="width:30%"></i></li>
+                            <li><time>[12:41:25]</time><b class="info">INFO</b><i style="width:70%"></i></li>
+                        </ol>
+                    </div>
+
+                    <div class="freq" aria-hidden="true">
+                        <div class="freq-title mono"><span>FREQUENCY</span><b>RANK</b></div>
+                        <div class="bar"><span class="mono"><em>INFO</em><em>01</em></span><div style="--w:86%"></div></div>
+                        <div class="bar p"><span class="mono"><em>WARNING</em><em>02</em></span><div style="--w:48%"></div></div>
+                        <div class="bar o"><span class="mono"><em>ERROR</em><em>03</em></span><div style="--w:27%"></div></div>
+                    </div>
+                </div>
+
+                <div class="vis-cap mono">
+                    <span>FIG.05 / <b>LOG STREAM</b></span>
+                    <span>DECORATIVE</span>
+                </div>
+
+                <div class="cols pbody">
+                    <p data-n="A / SINGLE PASS">Built a command-line log analyzer that processes structured application logs in a single pass, providing four analysis modes for summary and severity-specific inspection.</p>
+                    <p data-n="B / AGGREGATION">Implemented frequency aggregation with std::unordered_map and ranked recurring errors using std::sort, including frequency and alphabetical tie-breaking.</p>
+                    <p data-n="C / INCREMENTAL">Processed log entries incrementally while preserving timestamps and severity information for targeted troubleshooting.</p>
+                </div>
+
+                <div class="foot-row">
+                    <ul class="stack" aria-label="Technology">
+                        <li>C++</li>
+                        <li>STL</li>
+                        <li>CLI</li>
+                        <li>Data Processing</li>
+                    </ul>
+                    <a class="src" href="https://github.com/OshoProgrammer/LogAnalyzer" target="_blank" rel="noopener noreferrer" aria-label="LogAnalyzer repository on GitHub (opens in a new tab)">
+                        <span class="src-label">GITHUB</span>
+                        <span class="src-path">/OshoProgrammer/LogAnalyzer</span>
+                        <span class="src-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <footer class="foot mono">
+        <div class="wrap">
+            <span>OSHO SHARMA / <b>BUILD 2026</b></span>
+            <nav aria-label="Footer">
+                <a href="index.html">About</a>
+                <a href="projects.html">Projects</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>

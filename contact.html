@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Osho Sharma</title>
+    <meta name="description" content="Contact Osho Sharma: GitHub, LinkedIn and email.">
+
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --soft: #111111;
+            --panel: #151515;
+            --white: #f2efe8;
+            --dim: rgba(242, 239, 232, 0.58);
+            --line: rgba(242, 239, 232, 0.16);
+            --orange: #ff5a1f;
+            --purple: #7c3aed;
+            --purple-soft: #a78bfa;
+            --sans: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --mono: "SFMono-Regular", ui-monospace, Consolas, "Liberation Mono", Menlo, monospace;
+            --gutter: clamp(1.1rem, 4vw, 3rem);
+            --max: 1280px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--sans);
+            font-size: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            background-image:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px);
+            background-size: 64px 64px;
+            background-position: -1px -1px;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(10,10,10,0.35), var(--black) 85%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body > * { position: relative; z-index: 1; }
+
+        ::selection { background: var(--orange); color: var(--black); }
+        a { color: inherit; }
+        a:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding-left: var(--gutter);
+            padding-right: var(--gutter);
+        }
+
+        .mono {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        /* ---------- Top bar ---------- */
+        .topbar { border-bottom: 1px solid var(--line); background: rgba(10,10,10,0.85); }
+
+        .topbar .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .brand {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.22em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .brand i {
+            width: 0.6rem;
+            height: 0.6rem;
+            background: var(--orange);
+            display: inline-block;
+            box-shadow: 0.35rem 0.35rem 0 -0.05rem var(--purple);
+            margin-right: 0.35rem;
+        }
+
+        .nav ul { display: flex; gap: clamp(1rem, 3vw, 2.2rem); margin: 0; padding: 0; list-style: none; }
+
+        .nav a {
+            font-family: var(--mono);
+            font-size: 0.74rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--dim);
+            padding: 0.3rem 0.1rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .nav a::before { content: "/ "; color: var(--purple-soft); }
+        .nav a:hover, .nav a:focus-visible { color: var(--white); border-bottom-color: var(--purple); }
+        .nav a[aria-current="page"] { color: var(--orange); border-bottom-color: var(--orange); }
+
+        /* ---------- Strip ---------- */
+        .strip { border-bottom: 1px solid var(--line); color: var(--dim); }
+        .strip .wrap {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 0.55rem;
+            padding-bottom: 0.55rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .strip b { color: var(--orange); font-weight: 400; }
+
+        /* ---------- Page header ---------- */
+        .page-head .wrap {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            column-gap: 2rem;
+            align-items: end;
+            padding-top: clamp(2.5rem, 6vw, 4.5rem);
+            padding-bottom: clamp(2rem, 4vw, 3rem);
+        }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--purple-soft);
+            margin: 0 0 1.2rem;
+        }
+
+        .kicker::before { content: ""; width: 2.2rem; height: 1px; background: var(--orange); }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: clamp(3rem, 12vw, 8.4rem);
+            line-height: 0.86;
+            letter-spacing: -0.055em;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--white);
+            transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease;
+        }
+
+        h1:hover span { color: var(--orange); -webkit-text-stroke-color: var(--orange); }
+
+        .head-meta { text-align: right; color: var(--dim); padding-bottom: 0.6rem; line-height: 2; }
+        .head-meta b { color: var(--orange); font-weight: 400; }
+        .head-meta .pips { display: flex; justify-content: flex-end; gap: 0.35rem; margin-bottom: 0.6rem; }
+        .head-meta .pips i { width: 1.4rem; height: 0.4rem; background: var(--line); display: block; }
+        .head-meta .pips i:nth-child(1) { background: var(--orange); }
+        .head-meta .pips i:nth-child(2) { background: var(--purple); }
+
+        /* ---------- Main grid ---------- */
+        .connect { border-top: 1px solid var(--line); }
+
+        .connect .wrap {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            column-gap: clamp(1rem, 2.5vw, 2rem);
+            align-items: start;
+            padding-top: clamp(2rem, 4.5vw, 3.6rem);
+            padding-bottom: clamp(2.4rem, 5vw, 4.2rem);
+        }
+
+        .links-col { grid-column: 1 / span 6; min-width: 0; }
+        .art-col { grid-column: 7 / span 6; min-width: 0; }
+
+        .intro-id { color: var(--orange); display: block; margin-bottom: 0.6rem; }
+
+        .intro {
+            margin: 0 0 clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800;
+            font-size: clamp(2rem, 1.2rem + 3vw, 3.6rem);
+            line-height: 0.98;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+
+        .intro em { font-style: normal; color: var(--orange); }
+
+        /* Contact rows */
+        .dest { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+
+        .dest li { border-bottom: 1px solid var(--line); }
+
+        .row {
+            --acc: var(--orange);
+            position: relative;
+            display: grid;
+            grid-template-columns: 3.6rem minmax(0, 1fr) auto;
+            align-items: center;
+            gap: clamp(0.8rem, 2vw, 1.4rem);
+            padding: 1.3rem 0.6rem 1.3rem 1rem;
+            text-decoration: none;
+            transition: background 0.25s ease, padding-left 0.3s ease;
+        }
+
+        .row::before {
+            content: "";
+            position: absolute;
+            left: 0; top: -1px; bottom: -1px;
+            width: 3px;
+            background: var(--acc);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.3s ease;
+        }
+
+        .row.li { --acc: var(--purple); }
+
+        .row:hover, .row:focus-visible { background: rgba(242, 239, 232, 0.03); padding-left: 1.6rem; }
+        .row:hover::before, .row:focus-visible::before { transform: scaleY(1); }
+
+        .avatar {
+            width: 3.6rem;
+            height: 3.6rem;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            transition: border-color 0.3s ease;
+        }
+
+        .avatar svg { display: block; width: 100%; height: 100%; }
+        .avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .row:hover .avatar, .row:focus-visible .avatar { border-color: var(--acc); }
+
+        .row-label { display: block; color: var(--acc); margin-bottom: 0.15rem; }
+        .row.li .row-label { color: var(--purple-soft); }
+
+        .row-name {
+            display: block;
+            font-weight: 800;
+            font-size: clamp(1.4rem, 1rem + 1.6vw, 2.1rem);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+            overflow-wrap: anywhere;
+        }
+
+        .row-url {
+            display: block;
+            margin-top: 0.3rem;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            color: var(--dim);
+            overflow-wrap: anywhere;
+            transition: color 0.2s ease;
+        }
+
+        .row:hover .row-url { color: var(--white); }
+
+        .row-cta {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--acc);
+            border-bottom: 1px solid var(--acc);
+            padding: 0.25rem 0;
+            transition: color 0.2s ease, letter-spacing 0.3s ease;
+        }
+
+        .row.li .row-cta { color: var(--purple-soft); border-bottom-color: var(--purple); }
+        .row:hover .row-cta { color: var(--white); letter-spacing: 0.24em; }
+
+        /* ---------- Artwork ---------- */
+        .vis {
+            position: relative;
+            border: 1px solid var(--line);
+            background: linear-gradient(160deg, var(--panel), var(--black));
+            padding: 0.8rem;
+        }
+
+        .vis svg { display: block; width: 100%; height: auto; }
+        .vis-cap { display: flex; justify-content: space-between; gap: 1rem; padding-top: 0.7rem; color: var(--dim); }
+        .vis-cap b { color: var(--orange); font-weight: 400; }
+
+        .svg-t { font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px; fill: rgba(242,239,232,0.55); }
+        .svg-t.o { fill: var(--orange); }
+        .svg-t.p { fill: var(--purple-soft); }
+        .svg-t.w { fill: var(--white); }
+
+        .ln { fill: none; stroke-width: 2; stroke-linecap: square; stroke-linejoin: round; stroke-opacity: 0.55; transition: stroke-opacity 0.3s ease, stroke-width 0.3s ease; }
+        .ln.o { stroke: var(--orange); }
+        .ln.p { stroke: var(--purple); }
+        .ln.w { stroke: var(--white); stroke-opacity: 0.22; stroke-width: 1.2; }
+
+        .flow { stroke-dasharray: 6 10; animation: flow 7s linear infinite; }
+        @keyframes flow { to { stroke-dashoffset: -160; } }
+
+        .box { fill: #0a0a0a; stroke-width: 1.5; transition: fill 0.3s ease; }
+        .nd { transform-box: fill-box; transform-origin: center; transition: transform 0.35s ease; }
+
+        .core { fill: #0a0a0a; stroke: #f2efe8; stroke-opacity: 0.7; stroke-width: 1.5; }
+
+        /* react to hovering the matching link (and to the node itself) */
+        .vis g.n-gh, .vis g.n-li, .vis g.n-em { cursor: default; }
+
+        body:has(.row.gh:hover) .n-gh .ln,
+        body:has(.row.gh:focus-visible) .n-gh .ln,
+        .n-gh:hover .ln { stroke-opacity: 1; stroke-width: 3; }
+        body:has(.row.li:hover) .n-li .ln,
+        body:has(.row.li:focus-visible) .n-li .ln,
+        .n-li:hover .ln { stroke-opacity: 1; stroke-width: 3; }
+        body:has(.row.em:hover) .n-em .ln,
+        body:has(.row.em:focus-visible) .n-em .ln,
+        .n-em:hover .ln { stroke-opacity: 1; stroke-width: 3; }
+
+        body:has(.row.gh:hover) .n-gh .box, .n-gh:hover .box { fill: rgba(255, 90, 31, 0.25); }
+        body:has(.row.li:hover) .n-li .box, .n-li:hover .box { fill: rgba(124, 58, 237, 0.35); }
+        body:has(.row.em:hover) .n-em .box, .n-em:hover .box { fill: rgba(255, 90, 31, 0.25); }
+
+        body:has(.row.gh:hover) .n-gh .nd, .n-gh:hover .nd { transform: translate(5px, 5px); }
+        body:has(.row.li:hover) .n-li .nd, .n-li:hover .nd { transform: translate(-5px, 5px); }
+        body:has(.row.em:hover) .n-em .nd, .n-em:hover .nd { transform: translate(0, -6px); }
+
+        /* ---------- Footer ---------- */
+        .foot { border-top: 1px solid var(--line); }
+        .foot .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 1.1rem;
+            padding-bottom: 1.6rem;
+            color: var(--dim);
+        }
+        .foot nav { display: flex; gap: 1.4rem; }
+        .foot a { text-decoration: none; transition: color 0.2s ease; }
+        .foot a:hover { color: var(--orange); }
+        .foot b { color: var(--orange); font-weight: 400; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 980px) {
+            .links-col, .art-col { grid-column: 1 / -1; }
+            .art-col { margin-top: 2.4rem; }
+        }
+
+        @media (max-width: 720px) {
+            .topbar .wrap { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+            .strip span:nth-child(n+3) { display: none; }
+            .page-head .wrap { grid-template-columns: 1fr; row-gap: 1.2rem; }
+            .head-meta { text-align: left; }
+            .head-meta .pips { justify-content: flex-start; }
+
+            .row { grid-template-columns: 3rem minmax(0, 1fr); padding: 1.1rem 0.2rem; row-gap: 0.7rem; }
+            .row:hover, .row:focus-visible { padding-left: 0.8rem; }
+            .avatar { width: 3rem; height: 3rem; }
+            .row-cta { grid-column: 2; justify-self: start; }
+
+            .foot .wrap { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .flow { animation: none; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><i></i>OSHO SHARMA</a>
+            <nav class="nav" aria-label="Primary">
+                <ul>
+                    <li><a href="index.html">About</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="contact.html" aria-current="page">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="strip mono" aria-hidden="true">
+        <div class="wrap">
+            <span>SYS_003</span>
+            <span>STATUS / <b>ACTIVE</b></span>
+            <span>INPUT / OUTPUT</span>
+            <span>BUILD / 2026</span>
+        </div>
+    </div>
+
+    <main>
+
+        <header class="page-head">
+            <div class="wrap">
+                <div>
+                    <p class="kicker mono">/ NODE_07 / CONNECT</p>
+                    <h1>Con<span>tact</span></h1>
+                </div>
+                <div class="head-meta mono" aria-hidden="true">
+                    <div class="pips"><i></i><i></i><i></i></div>
+                    CHANNELS / <b>03</b><br>
+                    MEM_0x04
+                </div>
+            </div>
+        </header>
+
+        <section class="connect" aria-labelledby="connect-title">
+            <div class="wrap">
+
+                <div class="links-col">
+                    <span class="intro-id mono">01 / INPUT</span>
+                    <h2 class="intro" id="connect-title">Let's <em>connect</em></h2>
+
+                    <ul class="dest">
+
+                        <!-- GitHub -->
+                        <li>
+                            <a class="row gh" href="https://github.com/OshoProgrammer" target="_blank" rel="noopener noreferrer">
+                                <span class="avatar">
+                                    <!-- To use a real picture later: <img src="images/github-pfp.jpeg" alt="GitHub profile picture of Osho Sharma"> -->
+                                    <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M0 30 H14 M46 30 H60 M30 0 V14 M30 46 V60" stroke="#f2efe8" stroke-opacity="0.25" stroke-width="1.2" fill="none"/>
+                                        <rect x="14" y="14" width="32" height="32" fill="none" stroke="#ff5a1f" stroke-width="1.5"/>
+                                        <circle cx="30" cy="25" r="5" fill="none" stroke="#f2efe8" stroke-opacity="0.8" stroke-width="1.5"/>
+                                        <path d="M20 41 C20 33 40 33 40 41" fill="none" stroke="#f2efe8" stroke-opacity="0.8" stroke-width="1.5"/>
+                                        <rect x="12" y="12" width="5" height="5" fill="#ff5a1f"/>
+                                    </svg>
+                                </span>
+                                <span>
+                                    <span class="row-label mono">GitHub</span>
+                                    <span class="row-name">OshoProgrammer</span>
+                                    <span class="row-url">github.com/OshoProgrammer</span>
+                                </span>
+                                <span class="row-cta">View profile →</span>
+                            </a>
+                        </li>
+
+                        <!-- LinkedIn -->
+                        <li>
+                            <a class="row li" href="https://linkedin.com/in/osho-sharma-42b913324" target="_blank" rel="noopener noreferrer">
+                                <span class="avatar">
+                                    <!-- To use a real picture later: <img src="images/linkedin-pfp.jpeg" alt="LinkedIn profile picture of Osho Sharma"> -->
+                                    <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M0 30 H14 M46 30 H60 M30 0 V14 M30 46 V60" stroke="#f2efe8" stroke-opacity="0.25" stroke-width="1.2" fill="none"/>
+                                        <circle cx="30" cy="30" r="17" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+                                        <circle cx="30" cy="25" r="5" fill="none" stroke="#f2efe8" stroke-opacity="0.8" stroke-width="1.5"/>
+                                        <path d="M20 41 C20 33 40 33 40 41" fill="none" stroke="#f2efe8" stroke-opacity="0.8" stroke-width="1.5"/>
+                                        <circle cx="46" cy="14" r="3" fill="#7c3aed"/>
+                                    </svg>
+                                </span>
+                                <span>
+                                    <span class="row-label mono">LinkedIn</span>
+                                    <span class="row-name">Osho Sharma</span>
+                                    <span class="row-url">linkedin.com/in/osho-sharma-42b913324</span>
+                                </span>
+                                <span class="row-cta">View profile →</span>
+                            </a>
+                        </li>
+
+                        <!-- Email -->
+                        <li>
+                            <a class="row em" href="https://www.gmail.com">
+                            <span class="avatar">
+                             <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                             <path d="M0 30 H10 M50 30 H60"
+                            stroke="#f2efe8"
+                            stroke-opacity="0.25"
+                            stroke-width="1.2"
+                            fill="none"/>
+
+            <rect x="10" y="16" width="40" height="28"
+                  fill="none"
+                  stroke="#ff5a1f"
+                  stroke-width="1.5"/>
+
+            <path d="M10 16 L30 33 L50 16"
+                  fill="none"
+                  stroke="#f2efe8"
+                  stroke-opacity="0.8"
+                  stroke-width="1.5"/>
+
+            <rect x="46" y="12" width="5" height="5"
+                  fill="#7c3aed"/>
+        </svg>
+    </span>
+
+    <span>
+        <span class="row-label mono">Email</span>
+        <span class="row-name">mrosho079@gmail.com</span>
+        <span class="row-url">mailto:mrosho079@gmail.com</span>
+    </span>
+</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="art-col">
+                    <div class="vis" role="img" aria-label="Abstract network diagram: a central node labelled OSHO connected to GITHUB, LINKEDIN and EMAIL nodes">
+                        <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
+
+                            <!-- background traces -->
+                            <path class="ln w" d="M0 40 H90 L120 70 H180"/>
+                            <path class="ln w" d="M520 480 H430 L400 450 H350"/>
+                            <path class="ln w" d="M0 480 H70 L100 450 H140"/>
+                            <path class="ln w" d="M520 40 H460 L430 10"/>
+                            <path class="ln w" d="M0 300 H60 L90 330 H150"/>
+                            <path class="ln w" d="M520 300 H470 L440 330 H390"/>
+
+                            <!-- GITHUB branch -->
+                            <g class="n-gh">
+                                <path class="ln o flow" d="M210 250 H130 L100 220 V114"/>
+                                <path class="ln o" d="M210 270 H150 L130 290 V330"/>
+                                <rect class="box" x="40" y="70" width="120" height="44" stroke="#ff5a1f"/>
+                                <text class="svg-t w" x="54" y="97" style="font-size:12px">GITHUB</text>
+                                <circle class="nd" cx="100" cy="220" r="5" fill="#0a0a0a" stroke="#ff5a1f" stroke-width="2"/>
+                                <circle class="nd" cx="130" cy="330" r="4" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.6" stroke-width="1.5"/>
+                                <text class="svg-t o" x="40" y="62">NODE_01</text>
+                            </g>
+
+                            <!-- LINKEDIN branch -->
+                            <g class="n-li">
+                                <path class="ln p flow" d="M310 240 H390 L420 210 V154"/>
+                                <path class="ln p" d="M310 270 H370 L390 290 V340"/>
+                                <rect class="box" x="360" y="110" width="120" height="44" stroke="#7c3aed"/>
+                                <text class="svg-t w" x="372" y="137" style="font-size:12px">LINKEDIN</text>
+                                <circle class="nd" cx="420" cy="210" r="5" fill="#0a0a0a" stroke="#7c3aed" stroke-width="2"/>
+                                <circle class="nd" cx="390" cy="340" r="4" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.6" stroke-width="1.5"/>
+                                <text class="svg-t p" x="360" y="102">NODE_02</text>
+                            </g>
+
+                            <!-- EMAIL branch -->
+                            <g class="n-em">
+                                <path class="ln o flow" d="M250 310 V440"/>
+                                <path class="ln p" d="M270 310 V380 L290 400 V440"/>
+                                <rect class="box" x="200" y="440" width="120" height="44" stroke="#ff5a1f"/>
+                                <text class="svg-t w" x="226" y="467" style="font-size:12px">EMAIL</text>
+                                <circle class="nd" cx="250" cy="380" r="5" fill="#0a0a0a" stroke="#ff5a1f" stroke-width="2"/>
+                                <circle class="nd" cx="290" cy="400" r="4" fill="#0a0a0a" stroke="#7c3aed" stroke-width="1.5"/>
+                                <text class="svg-t o" x="200" y="432">NODE_03</text>
+                            </g>
+
+                            <!-- central node -->
+                            <rect x="210" y="210" width="100" height="100" class="core"/>
+                            <rect x="222" y="222" width="76" height="76" fill="none" stroke="#ff5a1f" stroke-width="1"/>
+                            <circle cx="228" cy="228" r="3" fill="#ff5a1f"/>
+                            <g stroke="#f2efe8" stroke-opacity="0.28" stroke-width="1">
+                                <path d="M240 222 V298 M260 222 V298 M280 222 V298"/>
+                                <path d="M222 240 H298 M222 260 H298 M222 280 H298"/>
+                            </g>
+                            <rect x="236" y="244" width="48" height="32" fill="#7c3aed" fill-opacity="0.9"/>
+                            <text class="svg-t w" x="244" y="264" style="font-size:12px">OSHO</text>
+
+                            <!-- pins -->
+                            <g fill="#f2efe8" fill-opacity="0.7">
+                                <rect x="202" y="236" width="8" height="3"/><rect x="202" y="256" width="8" height="3"/><rect x="202" y="276" width="8" height="3"/>
+                                <rect x="310" y="236" width="8" height="3"/><rect x="310" y="256" width="8" height="3"/><rect x="310" y="276" width="8" height="3"/>
+                                <rect x="236" y="202" width="3" height="8"/><rect x="256" y="202" width="3" height="8"/><rect x="276" y="202" width="3" height="8"/>
+                                <rect x="236" y="310" width="3" height="8"/><rect x="256" y="310" width="3" height="8"/><rect x="276" y="310" width="3" height="8"/>
+                            </g>
+
+                            <!-- decorative labels -->
+                            <text class="svg-t" x="14" y="510">X:000 Y:000</text>
+                            <text class="svg-t" x="214" y="196">0x00</text>
+                            <text class="svg-t" x="396" y="510">01 01 00 10</text>
+                            <text class="svg-t o" x="14" y="20">INPUT</text>
+                            <text class="svg-t p" x="468" y="26">OUTPUT</text>
+                        </svg>
+                        <div class="vis-cap mono"><span>FIG.06 / <b>NETWORK</b></span><span>DECORATIVE</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="foot mono">
+        <div class="wrap">
+            <span>OSHO SHARMA / <b>BUILD 2026</b></span>
+            <nav aria-label="Footer">
+                <a href="index.html">About</a>
+                <a href="projects.html">Projects</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>

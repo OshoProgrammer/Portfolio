@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osho Sharma — Systems &amp; Software Development</title>
+    <meta name="description" content="Osho Sharma, Computer Engineering student focused on systems programming, Linux, and backend development.">
+
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --soft: #111111;
+            --panel: #151515;
+            --white: #f2efe8;
+            --dim: rgba(242, 239, 232, 0.58);
+            --line: rgba(242, 239, 232, 0.16);
+            --orange: #ff5a1f;
+            --purple: #7c3aed;
+            --purple-soft: #a78bfa;
+            --sans: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --mono: "SFMono-Regular", ui-monospace, Consolas, "Liberation Mono", Menlo, monospace;
+            --gutter: clamp(1.1rem, 4vw, 3rem);
+            --max: 1280px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--sans);
+            font-size: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            background-image:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px);
+            background-size: 64px 64px;
+            background-position: -1px -1px;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(10,10,10,0.35), var(--black) 85%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body > * { position: relative; z-index: 1; }
+
+        ::selection { background: var(--orange); color: var(--black); }
+
+        a { color: inherit; }
+        a:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding-left: var(--gutter);
+            padding-right: var(--gutter);
+        }
+
+        .mono {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        /* ---------- Top bar ---------- */
+        .topbar {
+            border-bottom: 1px solid var(--line);
+            background: rgba(10,10,10,0.85);
+        }
+
+        .topbar .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .brand {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.22em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .brand i {
+            width: 0.6rem;
+            height: 0.6rem;
+            background: var(--orange);
+            display: inline-block;
+            box-shadow: 0.35rem 0.35rem 0 -0.05rem var(--purple);
+            margin-right: 0.35rem;
+        }
+
+        .nav ul {
+            display: flex;
+            gap: clamp(1rem, 3vw, 2.2rem);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .nav a {
+            font-family: var(--mono);
+            font-size: 0.74rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--dim);
+            padding: 0.3rem 0.1rem;
+            border-bottom: 1px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .nav a::before { content: "/ "; color: var(--purple-soft); }
+
+        .nav a:hover, .nav a:focus-visible { color: var(--white); border-bottom-color: var(--purple); }
+
+        .nav a[aria-current="page"] { color: var(--orange); border-bottom-color: var(--orange); }
+
+        /* ---------- Status strip ---------- */
+        .strip {
+            border-bottom: 1px solid var(--line);
+            color: var(--dim);
+        }
+
+        .strip .wrap {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 0.55rem;
+            padding-bottom: 0.55rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .strip b { color: var(--orange); font-weight: 400; }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            column-gap: clamp(1.5rem, 4vw, 4rem);
+            align-items: center;
+            padding-top: clamp(2.5rem, 6vw, 5rem);
+            padding-bottom: clamp(2.5rem, 6vw, 5rem);
+        }
+
+        .hero-text { min-width: 0; }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--purple-soft);
+            margin-bottom: 1.4rem;
+        }
+
+        .tag::before {
+            content: "";
+            width: 2.2rem;
+            height: 1px;
+            background: var(--orange);
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: clamp(3.6rem, 11.5vw, 9.2rem);
+            line-height: 0.84;
+            letter-spacing: -0.055em;
+            text-transform: uppercase;
+        }
+
+        h1 span { display: block; }
+
+        h1 span:last-child {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--white);
+            margin-left: clamp(1rem, 4vw, 3.5rem);
+            transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease;
+        }
+
+        h1:hover span:last-child { color: var(--orange); -webkit-text-stroke-color: var(--orange); }
+
+        .hero-sub {
+            margin: 2rem 0 0;
+            font-family: var(--mono);
+            font-weight: 400;
+            font-size: clamp(0.85rem, 0.75rem + 0.5vw, 1.1rem);
+            letter-spacing: 0.2em;
+            line-height: 1.6;
+            text-transform: uppercase;
+            color: var(--orange);
+            text-align: left;
+        }
+
+        .hero-lede {
+            margin: 1.2rem 0 0;
+            max-width: 38ch;
+            font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+            line-height: 1.55;
+            color: var(--white);
+            text-align: left;
+            padding-left: 1rem;
+            border-left: 2px solid var(--purple);
+        }
+
+        /* Hero visual */
+        .board {
+            position: relative;
+            border: 1px solid var(--line);
+            background: linear-gradient(160deg, var(--panel), var(--black));
+            padding: 0.8rem;
+        }
+
+        .board svg { display: block; width: 100%; height: auto; }
+
+        .board-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 0.7rem;
+            color: var(--dim);
+        }
+
+        .board-meta b { color: var(--orange); font-weight: 400; }
+
+        .trace { fill: none; stroke-width: 2; stroke-linecap: square; stroke-linejoin: round; }
+        .t-o { stroke: var(--orange); }
+        .t-p { stroke: var(--purple); }
+        .t-w { stroke: rgba(242,239,232,0.28); stroke-width: 1.2; }
+
+        .flow { stroke-dasharray: 6 10; animation: flow 6s linear infinite; }
+        @keyframes flow { to { stroke-dashoffset: -160; } }
+
+        .svg-t { font-family: var(--mono); font-size: 9px; letter-spacing: 1.2px; fill: rgba(242,239,232,0.55); }
+        .svg-t.o { fill: var(--orange); }
+        .svg-t.p { fill: var(--purple-soft); }
+
+        /* ---------- Sections ---------- */
+        .section { border-top: 1px solid var(--line); }
+
+        .section .wrap {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            column-gap: clamp(1rem, 2.5vw, 2rem);
+            padding-top: clamp(2rem, 4.5vw, 3.6rem);
+            padding-bottom: clamp(2.4rem, 5vw, 4.2rem);
+        }
+
+        .sec-head {
+            grid-column: 1 / span 3;
+            align-self: start;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .sec-head .id { display: block; color: var(--orange); margin-bottom: 0.5rem; }
+        .sec-head .title {
+            display: block;
+            font-family: var(--sans);
+            font-weight: 700;
+            font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .sec-content { grid-column: 4 / span 9; min-width: 0; }
+
+        /* About */
+        .about-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr);
+            gap: clamp(1.5rem, 4vw, 3rem);
+            align-items: start;
+        }
+
+        .about-lede {
+            margin: 0 0 1.4rem;
+            font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.1rem);
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+            font-weight: 600;
+        }
+
+        .about-text p { margin: 0 0 1.1rem; color: rgba(242,239,232,0.82); }
+        .about-text p:last-child { margin-bottom: 0; }
+
+        .frag {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            padding: 0.8rem;
+        }
+
+        .frag svg { display: block; width: 100%; height: auto; }
+        .frag .cap { display: flex; justify-content: space-between; color: var(--dim); padding-top: 0.6rem; }
+        .frag .cap b { color: var(--purple-soft); font-weight: 400; }
+
+        /* Currently */
+        .cur-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            border-top: 1px solid var(--line);
+            border-left: 1px solid var(--line);
+        }
+
+        .cur {
+            padding: 1.3rem 1.2rem 1.6rem;
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            transition: background 0.25s ease;
+        }
+
+        .cur:hover { background: rgba(124, 58, 237, 0.08); }
+
+        .cur h3 {
+            margin: 0 0 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--orange);
+            font-family: var(--mono);
+            font-weight: 400;
+            font-size: 0.74rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .cur:nth-child(2) h3 { border-bottom-color: var(--purple); }
+        .cur h3 em { font-style: normal; color: var(--orange); }
+        .cur:nth-child(2) h3 em { color: var(--purple-soft); }
+
+        .cur p { margin: 0; line-height: 1.5; }
+        .cur ul { margin: 0; padding: 0; list-style: none; line-height: 1.7; }
+        .cur ul li::before { content: "› "; color: var(--orange); font-family: var(--mono); }
+
+        /* Technologies */
+        .spec {
+            font-family: var(--mono);
+            border: 1px solid var(--line);
+            background: var(--soft);
+        }
+
+        .spec-group + .spec-group { border-top: 1px solid var(--line); }
+
+        .spec-title {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--line);
+            background: rgba(242,239,232,0.03);
+            color: var(--dim);
+        }
+
+        .spec-title b { color: var(--orange); font-weight: 400; }
+        .spec-group:nth-child(2) .spec-title b { color: var(--purple-soft); }
+
+        .spec ul { list-style: none; margin: 0; padding: 0; }
+
+        .spec li {
+            display: grid;
+            grid-template-columns: 3rem minmax(0, 1fr) auto;
+            align-items: baseline;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--line);
+            font-size: clamp(1.05rem, 0.9rem + 0.8vw, 1.5rem);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: background 0.2s ease, padding-left 0.25s ease, color 0.2s ease;
+        }
+
+        .spec li:last-child { border-bottom: 0; }
+
+        .spec li .n { font-size: 0.72rem; color: var(--dim); letter-spacing: 0.14em; }
+        .spec li .addr { font-size: 0.66rem; color: var(--purple-soft); letter-spacing: 0.14em; }
+
+        .spec li:hover { background: var(--orange); color: var(--black); padding-left: 1.5rem; }
+        .spec li:hover .n, .spec li:hover .addr { color: var(--black); }
+
+        /* Education / Cert records */
+        .record {
+            border: 1px solid var(--line);
+            background: var(--soft);
+            position: relative;
+        }
+
+        .record::before {
+            content: "";
+            position: absolute;
+            left: -1px; top: -1px; bottom: -1px;
+            width: 3px;
+            background: var(--orange);
+        }
+
+        .record.alt::before { background: linear-gradient(var(--orange), var(--purple)); }
+
+        .record-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 1px solid var(--line);
+            color: var(--dim);
+        }
+
+        .record-head b { color: var(--purple-soft); font-weight: 400; }
+
+        .record-body { padding: 1.3rem 1.2rem 1.5rem; }
+
+        .record-title {
+            margin: 0;
+            font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.1rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            font-weight: 600;
+        }
+
+        .field {
+            display: grid;
+            grid-template-columns: 7rem minmax(0, 1fr);
+            gap: 1rem;
+            margin-top: 0.9rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid var(--line);
+        }
+
+        .field + .field { margin-top: 0; }
+
+        .field dt { color: var(--orange); padding-top: 0.2rem; }
+        .field dd { margin: 0; }
+        .record.alt .field dt { color: var(--purple-soft); }
+
+        .record dl { margin: 0; }
+
+        /* ---------- Footer ---------- */
+        .foot { border-top: 1px solid var(--line); }
+
+        .foot .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 1.1rem;
+            padding-bottom: 1.6rem;
+            color: var(--dim);
+        }
+
+        .foot nav { display: flex; gap: 1.4rem; }
+        .foot a { text-decoration: none; transition: color 0.2s ease; }
+        .foot a:hover { color: var(--orange); }
+        .foot b { color: var(--orange); font-weight: 400; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 980px) {
+            .hero { grid-template-columns: 1fr; row-gap: 2.5rem; }
+            .sec-head { grid-column: 1 / -1; margin-bottom: 1.4rem; }
+            .sec-content { grid-column: 1 / -1; }
+            .sec-head .id, .sec-head .title { display: inline; }
+            .sec-head .id { margin-right: 0.8rem; }
+        }
+
+        @media (max-width: 720px) {
+            .topbar .wrap { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+            .strip span:nth-child(n+3) { display: none; }
+            .about-grid { grid-template-columns: 1fr; }
+            .cur-grid { grid-template-columns: 1fr; }
+            .spec li { grid-template-columns: 2.4rem minmax(0, 1fr); }
+            .spec li .addr { display: none; }
+            .field { grid-template-columns: 1fr; gap: 0.2rem; }
+            .foot .wrap { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .flow { animation: none; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="wrap">
+            <a class="brand" href="index.html"><i></i>OSHO SHARMA</a>
+            <nav class="nav" aria-label="Primary">
+                <ul>
+                    <li><a href="index.html" aria-current="page">About</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="strip mono" aria-hidden="true">
+        <div class="wrap">
+            <span>SYS_001</span>
+            <span>STATUS / <b>ACTIVE</b></span>
+            <span>ARCH / X86</span>
+            <span>BUILD / 2026</span>
+        </div>
+    </div>
+
+    <main>
+
+        <div class="wrap hero">
+            <div class="hero-text">
+                <p class="tag mono">NODE_07 / INDEX</p>
+                <h1><span>Osho</span><span>Sharma</span></h1>
+                <h2 class="hero-sub">Systems &amp; Software<br>Development</h2>
+                <p class="hero-lede">I build practical software with a focus on systems programming, command-line tools, and Linux.</p>
+            </div>
+
+            <div>
+                <div class="board" role="img" aria-label="Abstract circuit board illustration with orange and purple traces and a central chip">
+                    <svg viewBox="0 0 520 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <!-- background traces -->
+                        <path class="trace t-w" d="M0 60 H120 L150 90 H260"/>
+                        <path class="trace t-w" d="M0 400 H90 L120 370 H210"/>
+                        <path class="trace t-w" d="M520 70 H430 L400 100 H330"/>
+                        <path class="trace t-w" d="M520 390 H440 L410 360 H320"/>
+
+                        <!-- orange traces -->
+                        <path class="trace t-o" d="M0 130 H100 L130 160 H200 V190"/>
+                        <path class="trace t-o" d="M0 190 H70 L100 220 H200"/>
+                        <path class="trace t-o" d="M0 250 H110 L140 280 H200"/>
+                        <path class="trace t-o flow" d="M0 310 H80 L110 340 H200 V270"/>
+
+                        <!-- purple traces -->
+                        <path class="trace t-p" d="M520 130 H420 L390 160 H320 V190"/>
+                        <path class="trace t-p" d="M520 190 H450 L420 220 H320"/>
+                        <path class="trace t-p flow" d="M520 250 H410 L380 280 H320"/>
+                        <path class="trace t-p" d="M520 310 H440 L410 340 H320 V270"/>
+
+                        <!-- vertical buses -->
+                        <path class="trace t-o" d="M230 0 V110"/>
+                        <path class="trace t-p" d="M260 0 V90"/>
+                        <path class="trace t-o flow" d="M290 0 V110"/>
+                        <path class="trace t-p" d="M230 460 V350"/>
+                        <path class="trace t-o" d="M260 460 V370"/>
+                        <path class="trace t-p flow" d="M290 460 V350"/>
+
+                        <!-- central chip -->
+                        <rect x="190" y="130" width="140" height="140" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.7" stroke-width="1.5"/>
+                        <rect x="204" y="144" width="112" height="112" fill="none" stroke="#ff5a1f" stroke-width="1"/>
+                        <circle cx="206" cy="146" r="3" fill="#ff5a1f"/>
+                        <g stroke="#f2efe8" stroke-opacity="0.35" stroke-width="1">
+                            <path d="M222 144 V256 M240 144 V256 M258 144 V256 M276 144 V256 M294 144 V256"/>
+                            <path d="M204 162 H316 M204 180 H316 M204 198 H316 M204 216 H316 M204 234 H316"/>
+                        </g>
+                        <rect x="236" y="176" width="48" height="48" fill="#7c3aed" fill-opacity="0.85"/>
+                        <text class="svg-t" x="241" y="204" style="fill:#f2efe8">CPU</text>
+
+                        <!-- chip pins -->
+                        <g fill="#f2efe8" fill-opacity="0.7">
+                            <rect x="182" y="150" width="8" height="3"/><rect x="182" y="170" width="8" height="3"/><rect x="182" y="190" width="8" height="3"/><rect x="182" y="210" width="8" height="3"/><rect x="182" y="230" width="8" height="3"/>
+                            <rect x="330" y="150" width="8" height="3"/><rect x="330" y="170" width="8" height="3"/><rect x="330" y="190" width="8" height="3"/><rect x="330" y="210" width="8" height="3"/><rect x="330" y="230" width="8" height="3"/>
+                        </g>
+
+                        <!-- small ICs -->
+                        <rect x="40" y="30" width="56" height="26" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.5"/>
+                        <text class="svg-t" x="48" y="47">MEM</text>
+                        <rect x="424" y="404" width="56" height="26" fill="#0a0a0a" stroke="#f2efe8" stroke-opacity="0.5"/>
+                        <text class="svg-t" x="432" y="421">I/O</text>
+
+                        <!-- nodes -->
+                        <g fill="#0a0a0a" stroke-width="2">
+                            <circle cx="200" cy="190" r="5" stroke="#ff5a1f"/>
+                            <circle cx="200" cy="220" r="5" stroke="#ff5a1f"/>
+                            <circle cx="200" cy="280" r="5" stroke="#ff5a1f"/>
+                            <circle cx="320" cy="190" r="5" stroke="#7c3aed"/>
+                            <circle cx="320" cy="220" r="5" stroke="#7c3aed"/>
+                            <circle cx="320" cy="280" r="5" stroke="#7c3aed"/>
+                            <circle cx="150" cy="90" r="4" stroke="#f2efe8"/>
+                            <circle cx="400" cy="100" r="4" stroke="#f2efe8"/>
+                        </g>
+
+                        <!-- labels -->
+                        <text class="svg-t o" x="12" y="124">IN_0</text>
+                        <text class="svg-t o" x="12" y="184">IN_1</text>
+                        <text class="svg-t o" x="12" y="244">IN_2</text>
+                        <text class="svg-t p" x="470" y="124">OUT_0</text>
+                        <text class="svg-t p" x="470" y="184">OUT_1</text>
+                        <text class="svg-t p" x="470" y="244">OUT_2</text>
+                        <text class="svg-t" x="196" y="122">0x00</text>
+                        <text class="svg-t" x="246" y="446">01 01 00 10</text>
+                        <text class="svg-t" x="14" y="450">X:000 Y:000</text>
+                    </svg>
+                </div>
+                <div class="board-meta mono">
+                    <span>FIG.01 / <b>SIGNAL PATH</b></span>
+                    <span>MEM_0x04</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="section" aria-labelledby="about-title">
+            <div class="wrap">
+                <h2 class="sec-head" id="about-title"><span class="id mono">01 / SYS_001</span><span class="title">About</span></h2>
+                <div class="sec-content about-grid">
+                    <div class="about-text">
+                        <p class="about-lede">I'm a Computer Engineering student focused on systems programming, Linux, and backend development.</p>
+                        <p>I enjoy building practical software from the ground up, particularly command-line tools and programs that interact closely with the filesystem, data, and the operating system.</p>
+                        <p>My current work revolves around C++, Rust, and C. I'm interested in understanding how software works beneath the surface and improving my foundations in data structures, error handling, systems concepts, and software design.</p>
+                        <p>My projects include a Rust-based file organizer, an AES-256-GCM encryption tool, and a C++ log analyzer.</p>
+                    </div>
+
+                    <div class="frag" role="img" aria-label="Abstract memory layout diagram">
+                        <svg viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <g fill="none" stroke-width="1.2">
+                                <rect x="20" y="20" width="200" height="40" stroke="#f2efe8" stroke-opacity="0.5"/>
+                                <rect x="20" y="60" width="200" height="56" stroke="#f2efe8" stroke-opacity="0.5"/>
+                                <rect x="20" y="116" width="200" height="30" stroke="#ff5a1f"/>
+                                <rect x="20" y="146" width="200" height="70" stroke="#f2efe8" stroke-opacity="0.5"/>
+                                <rect x="20" y="216" width="200" height="34" stroke="#7c3aed"/>
+                                <rect x="20" y="250" width="200" height="50" stroke="#f2efe8" stroke-opacity="0.5"/>
+                            </g>
+                            <rect x="21" y="117" width="120" height="28" fill="#ff5a1f" fill-opacity="0.25"/>
+                            <rect x="21" y="217" width="80" height="32" fill="#7c3aed" fill-opacity="0.35"/>
+                            <g class="svg-t">
+                                <text x="30" y="44">STACK</text>
+                                <text x="30" y="92">HEAP</text>
+                                <text class="o" x="30" y="135" style="fill:#ff5a1f">FILESYSTEM</text>
+                                <text x="30" y="184">PROCESS</text>
+                                <text x="30" y="237" style="fill:#a78bfa">KERNEL</text>
+                                <text x="30" y="279">HARDWARE</text>
+                            </g>
+                            <g class="svg-t" text-anchor="end">
+                                <text x="212" y="44">0x7FFF</text>
+                                <text x="212" y="92">0x4000</text>
+                                <text x="212" y="135">0x2000</text>
+                                <text x="212" y="184">0x1000</text>
+                                <text x="212" y="237">0x0400</text>
+                                <text x="212" y="279">0x0000</text>
+                            </g>
+                        </svg>
+                        <div class="cap mono"><span>FIG.02</span><b>MEM LAYOUT</b></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="cur-title">
+            <div class="wrap">
+                <h2 class="sec-head" id="cur-title"><span class="id mono">02 / NODE_07</span><span class="title">Currently</span></h2>
+                <div class="sec-content">
+                    <div class="cur-grid">
+                        <article class="cur">
+                            <h3><em>01</em> / Learning</h3>
+                            <ul>
+                                <li>Systems programming</li>
+                                <li>Rust</li>
+                                <li>Linux</li>
+                                <li>Backend development</li>
+                            </ul>
+                        </article>
+                        <article class="cur">
+                            <h3><em>02</em> / Building</h3>
+                            <p>Small, practical software and command-line tools.</p>
+                        </article>
+                        <article class="cur">
+                            <h3><em>03</em> / Exploring</h3>
+                            <p>How software interacts with the operating system, filesystems, processes, and data.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="tech-title">
+            <div class="wrap">
+                <h2 class="sec-head" id="tech-title"><span class="id mono">03 / INDEX</span><span class="title">Technologies</span></h2>
+                <div class="sec-content">
+                    <div class="spec">
+                        <div class="spec-group">
+                            <div class="spec-title mono"><span>LANGUAGES</span><b>INPUT</b></div>
+                            <ul>
+                                <li><span class="n">01</span><span>C++</span><span class="addr">0x01</span></li>
+                                <li><span class="n">02</span><span>Rust</span><span class="addr">0x02</span></li>
+                                <li><span class="n">03</span><span>Shell Scripting</span><span class="addr">0x03</span></li>
+                            </ul>
+                        </div>
+                        <div class="spec-group">
+                            <div class="spec-title mono"><span>TOOLS</span><b>OUTPUT</b></div>
+                            <ul>
+                                <li><span class="n">04</span><span>Git &amp; GitHub</span><span class="addr">0x04</span></li>
+                                <li><span class="n">05</span><span>Cargo</span><span class="addr">0x05</span></li>
+                                <li><span class="n">06</span><span>Linux</span><span class="addr">0x06</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="edu-title">
+            <div class="wrap">
+                <h2 class="sec-head" id="edu-title"><span class="id mono">04 / RECORD</span><span class="title">Education</span></h2>
+                <div class="sec-content">
+                    <article class="record">
+                        <div class="record-head mono"><span>REC_EDU</span><b>2024 — Present</b></div>
+                        <div class="record-body">
+                            <h3 class="record-title">Diploma in Computer Engineering</h3>
+                            <dl>
+                                <div class="field mono"><dt>INSTITUTION</dt><dd style="font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:1rem;">Delhi Skill and Entrepreneurship University</dd></div>
+                                <div class="field mono"><dt>PERIOD</dt><dd style="font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:1rem;">2024 — Present</dd></div>
+                            </dl>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="cert-title">
+            <div class="wrap">
+                <h2 class="sec-head" id="cert-title"><span class="id mono">05 / RECORD</span><span class="title">Certifications</span></h2>
+                <div class="sec-content">
+                    <article class="record alt">
+                        <div class="record-head mono"><span>REC_CERT</span><b>STATUS / ACTIVE</b></div>
+                        <div class="record-body">
+                            <h3 class="record-title">1st Place — War of the Terminals</h3>
+                            <dl>
+                                <div class="field mono"><dt>Organizer</dt><dd style="font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:1rem;">CyberHub Dseu</dd></div>
+                                <div class="field mono"><dt>DETAIL</dt><dd style="font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:1rem;">A competitive Competition to clear OTW Bandit levels</dd></div>
+                            </dl>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="foot mono">
+        <div class="wrap">
+            <span>OSHO SHARMA / <b>BUILD 2026</b></span>
+            <nav aria-label="Footer">
+                <a href="index.html">About</a>
+                <a href="projects.html">Projects</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>
